@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {distinctUntilChanged, map, of, Subject} from "rxjs";
+import {BehaviorSubject, distinctUntilChanged, map, Subject, take, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -9,27 +9,25 @@ import {distinctUntilChanged, map, of, Subject} from "rxjs";
 export class AppComponent {
   public button1Click$: Subject<string> = new Subject<string>();
   public button2Click$: Subject<number> = new Subject<number>();
-  public button3Click$: Subject<number> = new Subject<number>();
+  public button3Click$: Subject<number | object> = new Subject<number | object>();
   public log: string[] = [];
-
   private _btn2Counter = 0;
 
   private _btn3Array = [1, 2, 4, 4, 13, 13, 13, 4, 4, 3, 2, 5];
-  // private _btn3Array2 = [
-  //   {a: 1, b: 4},
-  //   {a: 3, b: 7},
-  //   {a: 34, b: 9},
-  //   {a: 34, b: 9},
-  //   {a: 56, b: 11},
-  //   {b: 11, a: 56},
-  //   {a: 1, b: 4}
-  // ]
+  private _btn3Array2 = [
+    {a: 1, b: 4},
+    {a: 3, b: 7},
+    {a: 34, b: 9},
+    {a: 34, b: 9},
+    {a: 56, b: 11},
+    {b: 11, a: 56},
+    {a: 1, b: 4}
+  ]
   private _btn3CurrentIndex = 0;
 
   constructor() {
     this.button1Click$
       .pipe(
-
       )
       .subscribe((value) => this.log.push(value.toString()));
 
@@ -41,6 +39,7 @@ export class AppComponent {
 
     this.button3Click$
       .pipe(
+        map((value) => JSON.stringify(value)),
         distinctUntilChanged()
       )
       .subscribe((value) => this.log.push(value.toString()));
@@ -56,10 +55,16 @@ export class AppComponent {
   }
 
   button3Click() {
-    this.button3Click$.next(this._btn3Array[this._btn3CurrentIndex]);
+    this.button3Click$.next(this._btn3Array2[this._btn3CurrentIndex])
     this._btn3CurrentIndex++;
     if (this._btn3Array.length < this._btn3CurrentIndex + 1) {
       this.button3Click$.complete();
     }
+
+    // this.button3Click$.next(this._btn3Array[this._btn3CurrentIndex]);
+    // this._btn3CurrentIndex++;
+    // if (this._btn3Array.length < this._btn3CurrentIndex + 1) {
+    //   this.button3Click$.complete();
+    // }
   }
 }
