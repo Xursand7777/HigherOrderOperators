@@ -66,6 +66,7 @@ export class AppComponent {
       this.button3Click$.complete();
     }
 
+
     // this.button3Click$.next(this._btn3Array[this._btn3CurrentIndex]);
     // this._btn3CurrentIndex++;
     // if (this._btn3Array.length < this._btn3CurrentIndex + 1) {
