@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {BehaviorSubject, distinctUntilChanged, map, Subject, take, takeUntil} from "rxjs";
+import { distinctUntilChanged, map, Subject,  takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -10,6 +10,7 @@ export class AppComponent {
   public button1Click$: Subject<string> = new Subject<string>();
   public button2Click$: Subject<number> = new Subject<number>();
   public button3Click$: Subject<number | object> = new Subject<number | object>();
+  public destroy$:Subject<number> = new Subject<number>()
   public log: string[] = [];
   private _btn2Counter = 0;
 
@@ -28,6 +29,7 @@ export class AppComponent {
   constructor() {
     this.button1Click$
       .pipe(
+         takeUntil(this.button2Click$)
       )
       .subscribe((value) => this.log.push(value.toString()));
 
@@ -47,6 +49,9 @@ export class AppComponent {
 
   button1Click() {
     this.button1Click$.next(new Date().toISOString());
+    if(this._btn2Counter > 3){
+      this.button2Click$.complete();
+    }
   }
 
   button2Click() {
