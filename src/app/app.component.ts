@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { distinctUntilChanged, map, Subject,  takeUntil} from "rxjs";
+import {distinctUntilChanged, map, Subject, take, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -35,6 +35,7 @@ export class AppComponent {
 
     this.button2Click$
       .pipe(
+        take(3),
         map((value) => value * 10)
       )
       .subscribe((value) => this.log.push(value.toString()));
@@ -49,9 +50,6 @@ export class AppComponent {
 
   button1Click() {
     this.button1Click$.next(new Date().toISOString());
-    if(this._btn2Counter > 3){
-      this.button2Click$.complete();
-    }
   }
 
   button2Click() {
@@ -74,3 +72,4 @@ export class AppComponent {
     // }
   }
 }
+
